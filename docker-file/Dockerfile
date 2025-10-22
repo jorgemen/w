@@ -1,8 +1,15 @@
 FROM ubuntu:22.04
-RUN apt update
-RUN apt -y install nginx=1.18.* tree
-RUN echo "<marquee>Ola k ase</marquee>" > /var/www/html/index.html
+ARG DATE \
+    VERSION=1.18.*
+ENV DATABASE_IP="192.168.2.1" \
+    DATABASE_PORT=5432
+RUN apt-get update && \
+    apt-get -y install nginx=$VERSION tree
+ADD html/ /var/www/html
 EXPOSE 80
-ENTRYPOINT [ "/usr/sbin/nginx"]
+ENTRYPOINT [ "/usr/sbin/nginx" ]
 CMD [ "-g", "daemon off;" ]
-
+MAINTAINER Jorge Menéndez <jorgemen@gmail.com>
+WORKDIR /var/tmp
+LABEL base.version="$VERSION"
+LABEL base.build.date="$DATE"
